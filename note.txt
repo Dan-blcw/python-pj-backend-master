@@ -1,0 +1,6 @@
+dong bo db voi python: python manage.py makemigrations -> python manage.py migrate
+run: python manage.py runserver
+tao user admin (tao 1 lan duy nhat): python manage.py createsuperuser
+
+tk: admin
+mk: 1
