@@ -105,13 +105,17 @@ class CartItemViewSet(viewsets.ModelViewSet):
         user = request.user
         cart = Cart.objects.filter(user=user)
         product = Product.objects.get(id=request.data['product'])
+        colors = request.data['colors']
+        size = request.data['size']
 
+        product.colors = colors
+        product.size = size
         if request.data['quantity'] > product.quantity:
             return Response("Quantity in stock is not enough", status=status.HTTP_400_BAD_REQUEST)
 
         if cart.exists():
             request.data['cart'] = cart.get().id
-            cart_item = CartItem.objects.filter(cart=cart.get(), product_id=request.data['product'])
+            cart_item = CartItem.objects.filter(cart=cart.get(), product_id=request.data['product'],colors= colors,size=size)
 
             if cart_item.exists():
                 request.data['quantity'] += cart_item.get().quantity

@@ -7,6 +7,7 @@ from products.models import Product
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, related_name='orders', through='OrderDetail')
+    sku = models.CharField(max_length=30)
     name = models.CharField(max_length=255)
     phone = models.CharField(max_length=30)
     address = models.CharField(max_length=255)
@@ -18,3 +19,5 @@ class OrderDetail(models.Model):
     order = models.ForeignKey(Order, related_name='order_details', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name='order_details', on_delete=models.CASCADE)
     quantity = models.IntegerField()
+    colors = models.CharField(max_length=30)
+    size = models.CharField(max_length=30)

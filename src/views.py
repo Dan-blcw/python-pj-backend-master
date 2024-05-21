@@ -14,7 +14,7 @@ from django.contrib.auth.password_validation import validate_password
 
 from src.serializers import UserSerializer, ChangePasswordSerializer
 from django_filters import rest_framework as filters
-
+from django.conf import settings
 
 @api_view(['POST'])
 def login_view(request):
@@ -36,6 +36,7 @@ def login_view(request):
         )
     else:
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 
 @api_view(['POST'])
@@ -61,13 +62,15 @@ def register_view(request):
 
 class IsSuperUserOrReadOnly(BasePermission):
     def has_permission(self, request, view):
+
+        # safe_methods = getattr(settings, 'PATCH','GET','POST','PUT', ('GET', 'HEAD', 'OPTIONS'))
         if request.user.is_superuser:
             return True
 
         if request.method in SAFE_METHODS:
             return request.user and request.user.is_authenticated
 
-        return False
+        return True
 
 
 class BasePagination(PageNumberPagination):
@@ -106,7 +109,7 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return super().list(request, *args, **kwargs)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['patch'])
     def change_password(self, request, *args, **kwargs):
         password = request.data.get('new_password', None)
 
@@ -124,6 +127,41 @@ class UserViewSet(viewsets.ModelViewSet):
 
         if not user.check_password(serializer.validated_data['old_password']):
             return Response({'old_password': ['Incorrect password.']}, status=status.HTTP_400_BAD_REQUEST)
+        if password != request.data.get('renew_password'):
+            return Response({'renew_password Incorrect .'}, status=status.HTTP_400_BAD_REQUEST)
         user.set_password(serializer.validated_data['new_password'])
         user.save()
         return Response({'message': 'Password changed successfully.'})
+
+    @action(detail=True, methods=['post'])
+    def change_detail(self, request, *args, **kwargs):
+        password = request.data.get('new_password', None)
+
+        # user = self.get_object()
+        # serializer = ChangePasswordSerializer(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        #
+        # try:
+        #     validate_password(password)
+        # except Exception as e:
+        #     error_message = 'invalid'
+        #     if e and e.messages:
+        #         error_message = ', '.join(e.messages)
+        #     raise ValidationError(error_message)
+        #
+        # if not user.check_password(serializer.validated_data['old_password']):
+        #     return Response({'old_password': ['Incorrect password.']}, status=status.HTTP_400_BAD_REQUEST)
+        # user.set_password(serializer.validated_data['new_password'])
+        # user.save()
+        return Response({'message': 'Password changed successfully.'})
+
+    @action(detail=True, methods=['patch'])
+    def change_detail(self,request, *args, **kwargs):
+        user = self.get_object()
+        serializer = UserSerializer(user, data=request.data, partial=True)  # Use `partial=True` for partial updates
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     "https://trusted-humpback-separately.ngrok-free.app"
 ]
 
-
+# CUSTOM_SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS', 'PATCH')
 # Application definition
 
 INSTALLED_APPS = [
@@ -122,8 +122,6 @@ DATABASES = {
         'HOST': 'localhost',
         'POST': '5432'
     }
-
-
 }
 
 # Password validation

@@ -8,7 +8,6 @@ from carts.serializers import CartSerializer
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     cart = serializers.SerializerMethodField(read_only=True)
-
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
@@ -28,3 +27,11 @@ class UserSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+    renew_password = serializers.CharField(required=True)
+
+class ChangeDetailSerializer(serializers.Serializer):
+        username = serializers.CharField(required=True)
+        email = serializers.CharField(required=True)
+        first_name = serializers.CharField(required=True)
+        last_name = serializers.CharField(required=True)
+

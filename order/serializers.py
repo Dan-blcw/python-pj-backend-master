@@ -10,7 +10,7 @@ from .models import Order, OrderDetail
 class CreateOrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderDetail
-        fields = ['product', 'quantity']
+        fields = ['product', 'quantity','colors','size']
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderDetail
-        fields = ['product', 'quantity']
+        fields = ['product', 'quantity', 'colors','size']
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'order_details', 'name', 'phone', 'address', 'total_amount', 'created_at']
+        fields = ['id','sku', 'user', 'order_details', 'name', 'phone', 'address', 'total_amount', 'created_at']
 
 
 class CreateOrderSerializer(serializers.ModelSerializer):
@@ -36,7 +36,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'order_details', 'name', 'phone', 'address', 'total_amount', 'created_at']
+        fields = ['id','sku', 'user', 'order_details', 'name', 'phone', 'address', 'total_amount', 'created_at']
 
     def create(self, validated_data):
         order_details_data = validated_data.pop('order_details')
@@ -48,7 +48,10 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             for order_detail_data in order_details_data:
                 product = order_detail_data['product']
                 quantity = order_detail_data['quantity']
-
+                colors = order_detail_data['colors']
+                size = order_detail_data['size']
+                product.colors = colors
+                product.size = size
                 if product.quantity < quantity:
                     raise ValidationError(f"Số lượng sản phẩm {product.name} không đủ.")
 

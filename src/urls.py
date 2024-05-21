@@ -33,8 +33,10 @@ urlpatterns = [
                   path('api/logout/', views.logout_view, name='logout'),
                   path('api/register/', views.register_view, name='register'),
                   path('api/', include(router.urls)),
-                  path('api/user/change-password/<int:pk>/', views.UserViewSet.as_view({'post': 'change_password'}),
+                  path('api/user/change-password/<int:pk>/', views.UserViewSet.as_view({'patch': 'change_password'}),
                        name='user-change-password'),
+                path('api/user/change-detail/<int:pk>/', views.UserViewSet.as_view({'patch': 'change_detail'}),
+                       name='user-change-detail'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
