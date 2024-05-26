@@ -23,6 +23,9 @@ class UserSerializer(serializers.ModelSerializer):
             return cart.get().id
         return None
 
+    def get_username(self, user):
+        return user.username
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)

@@ -8,7 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
-
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 
@@ -109,6 +108,9 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return super().list(request, *args, **kwargs)
 
+    # def logout_change(self):
+    #     user = self.get_object()
+    #     user.;
     @action(detail=True, methods=['patch'])
     def change_password(self, request, *args, **kwargs):
         password = request.data.get('new_password', None)
@@ -133,27 +135,10 @@ class UserViewSet(viewsets.ModelViewSet):
         user.save()
         return Response({'message': 'Password changed successfully.'})
 
-    @action(detail=True, methods=['post'])
-    def change_detail(self, request, *args, **kwargs):
-        password = request.data.get('new_password', None)
-
-        # user = self.get_object()
-        # serializer = ChangePasswordSerializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        #
-        # try:
-        #     validate_password(password)
-        # except Exception as e:
-        #     error_message = 'invalid'
-        #     if e and e.messages:
-        #         error_message = ', '.join(e.messages)
-        #     raise ValidationError(error_message)
-        #
-        # if not user.check_password(serializer.validated_data['old_password']):
-        #     return Response({'old_password': ['Incorrect password.']}, status=status.HTTP_400_BAD_REQUEST)
-        # user.set_password(serializer.validated_data['new_password'])
-        # user.save()
-        return Response({'message': 'Password changed successfully.'})
+    # @action(detail=True, methods=['post'])
+    # def change_detail(self, request, *args, **kwargs):
+    #     password = request.data.get('new_password', None)
+    #     return Response({'message': 'Password changed successfully.'})
 
     @action(detail=True, methods=['patch'])
     def change_detail(self,request, *args, **kwargs):
@@ -165,3 +150,4 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

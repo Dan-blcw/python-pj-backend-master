@@ -59,3 +59,11 @@ class OrderViewSet(viewsets.ModelViewSet):
             self.perform_destroy(instance)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        status = request.data.get('status', None)
+        instance.update_status(status)
+        return Response("update status thanh cong")
+
+
